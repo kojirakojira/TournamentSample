@@ -29,7 +29,7 @@
                               x-small
                               @click="win(r, idx, 1)">win!</v-btn>
                             <v-btn v-show="m.partic1.xDisp" small fab class="x-btn" @click="cancel(r, idx, 1)">×</v-btn>
-                            <input class="point-input" v-model="m.partic1.point" />
+                            <input type="tel" class="point-input" v-model="m.partic1.point" />
                         </div>
                         <div v-else class="partic partic-null" />
                         <!-- 参加者2 -->
@@ -88,7 +88,7 @@
                               x-small
                               @click="win3rd(2)">win!</v-btn>
                             <v-btn v-show="tnmObj['3rd-pp'].partic2.xDisp" @click="cancel3rd()" small fab class="x-btn">×</v-btn>
-                            <input class="point-input" v-model="tnmObj['3rd-pp'].partic2.point" />
+                            <input class="point-input" type="tel" v-model="tnmObj['3rd-pp'].partic2.point" />
                         </div>
                         <div v-else class="partic partic-null" />
                       </div>
@@ -396,6 +396,10 @@ export default {
       this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'xDisp')
     },
     win (r, idx, type) {
+      if (!this.tnmObj['r' + r][idx]['partic' + type].winDisp) {
+        return
+      }
+
       this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'win', 1)
 
       // 次のラウンドの位置を求める
@@ -428,6 +432,9 @@ export default {
     },
     // 進めたparticを取り消す、そうでない場合はそのラウンドのユーザを取り消す
     cancel (r, idx, type) {
+      if (!this.tnmObj['r' + r][idx]['partic' + type].xDisp) {
+        return
+      }
       const m = this.tnmObj['r' + r][idx]
       if (m.partic1 && m.partic2 && (m.partic1.win || m.partic2.win)) {
         // winを確定していた場合はwinを取り消す
@@ -650,7 +657,7 @@ export default {
   position: absolute;
   z-index: 3;
   top: 2px;
-  right: 45px;
+  right: 56px;
 }
 .x-btn {
   width: 16px !important;
@@ -658,6 +665,6 @@ export default {
   position: absolute;
   z-index: 2px;
   top: 4px;
-  right: 26px;
+  right: 33px;
 }
 </style>
