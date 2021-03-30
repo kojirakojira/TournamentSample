@@ -18,10 +18,15 @@
                         <!-- 参加者1 -->
                         <div
                           v-if="m.partic1"
-                          @mouseover="mouseoverPartic(r, idx, 1)"
-                          @mouseout="mouseoutPartic(r, idx, 1)"
+                          @mouseenter="mouseenterPartic(r, idx, 1)"
+                          @mouseleave="mouseleavePartic(r, idx, 1)"
                           :class="classSelector(m.partic1, 1)">
                             {{ m.partic1.name + ' #' + m.partic1.id }}
+                            <v-btn
+                              color="info"
+                              v-show="m.partic1.detailsDisp"
+                              class="details-btn"
+                              x-small>表示</v-btn>
                             <v-btn
                               color="error"
                               v-show="m.partic1.winDisp"
@@ -35,10 +40,15 @@
                         <!-- 参加者2 -->
                         <div
                           v-if="m.partic2"
-                          @mouseover="mouseoverPartic(r, idx, 2)"
-                          @mouseout="mouseoutPartic(r, idx, 2)"
+                          @mouseenter="mouseenterPartic(r, idx, 2)"
+                          @mouseleave="mouseleavePartic(r, idx, 2)"
                           :class="classSelector(m.partic2, 2)">
                             {{ m.partic2.name + ' #' + m.partic2.id }}
+                            <v-btn
+                              color="info"
+                              v-show="m.partic2.detailsDisp"
+                              class="details-btn"
+                              x-small>表示</v-btn>
                             <v-btn
                               color="error"
                               v-show="m.partic2.winDisp"
@@ -61,10 +71,15 @@
                       <div class="partics">
                         <div
                           v-if="tnmObj['3rd-pp'].partic1"
-                          @mouseover="mouseover3rdpp(1)"
-                          @mouseout="mouseout3rdpp(1)"
+                          @mouseenter="mouseenter3rdpp(1)"
+                          @mouseleave="mouseleave3rdpp(1)"
                           :class="classSelector(tnmObj['3rd-pp'].partic1, 1)">
                             {{ tnmObj['3rd-pp'].partic1.name + ' #' + tnmObj['3rd-pp'].partic1.id }}
+                            <v-btn
+                              color="info"
+                              v-show="tnmObj['3rd-pp'].partic1.detailsDisp"
+                              class="details-btn"
+                              x-small>表示</v-btn>
                             <v-btn
                               color="error"
                               v-show="tnmObj['3rd-pp'].partic1.winDisp"
@@ -77,10 +92,15 @@
                         <div v-else class="partic partic-null" />
                         <div
                           v-if="tnmObj['3rd-pp'].partic2"
-                          @mouseover="mouseover3rdpp(2)"
-                          @mouseout="mouseout3rdpp(2)"
+                          @mouseenter="mouseenter3rdpp(2)"
+                          @mouseleave="mouseleave3rdpp(2)"
                           :class="classSelector(tnmObj['3rd-pp'].partic2, 2)">
                             {{ tnmObj['3rd-pp'].partic2.name + ' #' + tnmObj['3rd-pp'].partic2.id }}
+                            <v-btn
+                              color="info"
+                              v-show="tnmObj['3rd-pp'].partic2.detailsDisp"
+                              class="details-btn"
+                              x-small>表示</v-btn>
                             <v-btn
                               color="error"
                               v-show="tnmObj['3rd-pp'].partic2.winDisp"
@@ -333,7 +353,7 @@ export default {
       zentai.style.height = this.heightArr.slice(-1)
     },
     // 参加者にマウスを当てたとき
-    mouseoverPartic (r, idx, type) {
+    mouseenterPartic (r, idx, type) {
       // 次のラウンドの位置を求める
       const x = r * 1 + 1
       const y = Math.ceil((idx * 1 + 1) / 2)
@@ -363,24 +383,40 @@ export default {
         }
       }
 
+      // 「表示」を表示
+      const func = () => {
+        this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'detailsDisp', true)
+      }
+      setTimeout(func, 0)
+
       if (winFlg) {
-        // 「win!」を表示させる
-        this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp', true)
+        // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応
+        const func = () => {
+          // 「win!」を表示させる
+          this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp', true)
+        }
+        setTimeout(func, 0)
       }
       if (xFlg) {
-        // 「x」を表示させる
-        this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp', true)
+        // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応
+        const func = () => {
+          // 「x」を表示させる
+          this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp', true)
+        }
+        setTimeout(func, 0)
       }
     },
     // 参加者からマウスを離したとき
-    mouseoutPartic (r, idx, type) {
+    mouseleavePartic (r, idx, type) {
+      // 「表示」を削除する
+      this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'detailsDisp')
       // 「win!」を削除する
       this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp')
       // 「x」を削除する
       this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp')
     },
     // 3位決定戦にマウスを当てたとき
-    mouseover3rdpp (type) {
+    mouseenter3rdpp (type) {
       const m = this.tnmObj['3rd-pp']
       if (m.partic1 && m.partic2) {
         if (!(m.partic1.win || m.partic2.win)) {
@@ -391,15 +427,11 @@ export default {
       }
     },
     // 3位決定戦からマウスを離したとき
-    mouseout3rdpp (type) {
+    mouseleave3rdpp (type) {
       this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'winDisp')
       this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'xDisp')
     },
     win (r, idx, type) {
-      if (!this.tnmObj['r' + r][idx]['partic' + type].winDisp) {
-        return
-      }
-
       this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'win', 1)
 
       // 次のラウンドの位置を求める
@@ -429,12 +461,11 @@ export default {
           this.$set(this.tnmObj['3rd-pp'], 'partic' + (idx * 1 + 1), oppObj)
         }
       }
+      // 表示を消す
+      this.mouseleavePartic(r, idx, type)
     },
     // 進めたparticを取り消す、そうでない場合はそのラウンドのユーザを取り消す
     cancel (r, idx, type) {
-      if (!this.tnmObj['r' + r][idx]['partic' + type].xDisp) {
-        return
-      }
       const m = this.tnmObj['r' + r][idx]
       if (m.partic1 && m.partic2 && (m.partic1.win || m.partic2.win)) {
         // winを確定していた場合はwinを取り消す
@@ -652,7 +683,7 @@ export default {
     right: 0px;
     font-weight: bold;
 }
-.win-btn {
+.details-btn {
   padding: 0px !important;
   position: absolute;
   z-index: 3;
@@ -666,5 +697,12 @@ export default {
   z-index: 2px;
   top: 4px;
   right: 33px;
+}
+.win-btn {
+  padding: 0px !important;
+  position: absolute;
+  z-index: 3;
+  top: 2px;
+  right: 100px;
 }
 </style>
