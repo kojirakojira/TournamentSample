@@ -46,7 +46,7 @@
                               x-small
                               @click="win(r, idx, 2)">win!</v-btn>
                             <v-btn v-show="m.partic2.xDisp" small fab class="x-btn" @click="cancel(r, idx, 2)">×</v-btn>
-                            <input class="point-input" v-model="m.partic2.point" />
+                            <input type="tel" class="point-input" v-model="m.partic2.point" />
                         </div>
                         <div v-else class="partic partic-null" />
                         <!-- partic-win-cトーナメント表の線を表示するためのclass -->
@@ -72,7 +72,7 @@
                               x-small
                               @click="win3rd(1)">win!</v-btn>
                             <v-btn v-show="tnmObj['3rd-pp'].partic1.xDisp" @click="cancel3rd()" small fab class="x-btn">×</v-btn>
-                            <input class="point-input" v-model="tnmObj['3rd-pp'].partic1.point" />
+                            <input type="tel" class="point-input" v-model="tnmObj['3rd-pp'].partic1.point" />
                         </div>
                         <div v-else class="partic partic-null" />
                         <div
