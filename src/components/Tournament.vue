@@ -6,11 +6,11 @@
           v-touch-events:swipe.right="onSwipeRight"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
-          <div v-for="r of log" :key="r">
+          <div v-for="r of log2" :key="r">
             <div :class="rounds[r - 1]">
               <div class="header">{{ headers[r - 1] }}</div>
               <div class="matches">
-                  <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log ? 'match' : 'match match-c'">
+                  <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log2 ? 'match' : 'match match-c'">
                       <div class="match-number">
                           {{ m.mid | midFilter }}
                       </div>
@@ -35,7 +35,7 @@
                         <div :class="winClassSelector(r, m)" />
                       </div>
                   </div>
-                  <div v-if="r === log && pp3rdFlg" id="pp-3rd">
+                  <div v-if="r === log2 && pp3rdFlg" id="pp-3rd">
                       <div class="match-number">
                           3rd
                       </div>
@@ -78,7 +78,7 @@ export default {
       particCount: 64,
       now: 1, // 何回戦目までスライドした状態か
 
-      log: 1, // 何回戦まであるか
+      log2: 1, // 何回戦まであるか
       heightArr: [],
       headers: []
     }
@@ -111,8 +111,8 @@ export default {
     }
 
     // 何回戦まで必要かを求める
-    this.log = Math.ceil(Math.log2(this.particCount))
-    for (let i = 0; i < this.log; i++) {
+    this.log2 = Math.ceil(Math.log2(this.particCount))
+    for (let i = 0; i < this.log2; i++) {
       this.rounds.push('round-' + (i * 1 + 1))
 
       // ヘッダ生成
@@ -124,10 +124,10 @@ export default {
 
     this.$nextTick(() => {
       const zentai = document.getElementById('zentai')
-      this.roundWidth = (zentai.clientWidth / this.log)
+      this.roundWidth = (zentai.clientWidth / this.log2)
     })
 
-    this.pp3rdFlg = this.tnmObj['3rd-pp']
+    this.pp3rdFlg = !!this.tnmObj['3rd-pp']
   },
   methods: {
     // ヘッダ部分の生成
@@ -140,16 +140,16 @@ export default {
         }
       }
       let header = (i * 1 + 1) + '回戦'
-      if (i === this.log - 2) {
+      if (i === this.log2 - 2) {
         header = '準決勝'
-      } else if (i === this.log - 1) {
+      } else if (i === this.log2 - 1) {
         header = '決勝'
       }
       return header + time
     },
     // cssをヘッダに追加しておく
     createStyle () {
-      for (let i = 1; i < this.log; i++) {
+      for (let i = 1; i < this.log2; i++) {
         const round = i * 1 + 1
         // matchesのmargin-topを設定
         let newStyle = document.createElement('style')
@@ -247,11 +247,11 @@ export default {
     },
     // 左にスワイプにしたとき
     onSwipeLeft () {
-      if (this.now === this.log) {
+      if (this.now === this.log2) {
         return
       }
       const zentai = document.getElementById('zentai')
-      this.position -= (zentai.clientWidth / this.log)
+      this.position -= (zentai.clientWidth / this.log2)
       zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
 
       // heightを変える(基準値は254pxとする)
@@ -269,7 +269,7 @@ export default {
 
       // クラスを切り替える
       let c = 1
-      for (let i = this.now; i < this.log; i++) {
+      for (let i = this.now; i < this.log2; i++) {
         this.rounds.splice(i, 1, 'round-' + (c++))
       }
       this.now++
@@ -280,11 +280,11 @@ export default {
         return
       }
       const zentai = document.getElementById('zentai')
-      this.position += (zentai.clientWidth / this.log)
+      this.position += (zentai.clientWidth / this.log2)
       zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
       this.now--
       // クラスを切り替える
-      for (let i = this.now; i < this.log; i++) {
+      for (let i = this.now; i < this.log2; i++) {
         this.rounds.splice(i, 1, 'round-' + (this.rounds[i].slice(-1) * 1 + 1))
       }
       // heightを変える

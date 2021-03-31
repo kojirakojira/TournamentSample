@@ -230,18 +230,19 @@ export default {
       this.position -= (zentai.clientWidth / this.log2)
       zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
 
+      this.heightArr.push(zentai.clientHeight)
       // heightを変える(基準値は254pxとする)
       let height = 0
       if (zentai.clientHeight / 2 + 36 > 254) {
         // トーナメント表全体のheight / 2 + ヘッダー部分
-        height = zentai.clientHeight / 2 + 36 + 'px'
+        height = zentai.clientHeight / 2 + 36
       } else {
         // 決勝のheight
         const final = document.querySelector('.' + this.rounds[this.rounds.length - 1])
-        height = final.clientHeight + 'px'
+        height = final.clientHeight
       }
-      zentai.style.height = height
-      this.heightArr.push(height)
+      zentai.style.height = height + 'px'
+      // this.heightArr.push(height + 'px')
 
       // クラスを切り替える
       let c = 1
@@ -252,6 +253,16 @@ export default {
         this.rounds.splice((this.now - 1), 1, 'round-0')
       }
       this.now++
+
+      // 表示位置を計算
+      const zentaiHeight = zentai.clientHeight
+      const yOffset = window.pageYOffset
+      const tnmTop = zentai.getBoundingClientRect().top + yOffset
+      // 対応する表示位置の割合
+      const per = (yOffset - tnmTop) / zentaiHeight
+      if (per > 0) {
+        window.scrollTo(0, height * per + tnmTop)
+      }
     },
     // 右にスワイプしたとき
     onSwipeRight () {
@@ -270,8 +281,23 @@ export default {
         this.rounds.splice((this.now - 1), 1, 'round-1')
       }
       // heightを変える
+      const height = this.heightArr.slice(-1)
+      zentai.style.height = height + 'px'
       this.heightArr.pop()
-      zentai.style.height = this.heightArr.slice(-1)
+
+      // 表示位置を計算
+      const zentaiHeight = zentai.clientHeight
+      const yOffset = window.pageYOffset
+      const tnmTop = zentai.getBoundingClientRect().top + yOffset
+      // 対応する表示位置の割合
+      const per = (yOffset - tnmTop) / zentaiHeight
+      if (per > 0) {
+        const func = () => {
+          // transition後に移動
+          window.scrollTo(0, height * per + tnmTop)
+        }
+        setTimeout(func, 1000)
+      }
     },
     getTnmObj () {
       return JSON.stringify(this.tnmObj)
