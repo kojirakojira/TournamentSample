@@ -383,28 +383,21 @@ export default {
         }
       }
 
-      // 「表示」を表示
+      // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応。
       const func = () => {
+        // 「表示」を表示
         this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'detailsDisp', true)
-      }
-      setTimeout(func, 0)
 
-      if (winFlg) {
-        // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応
-        const func = () => {
+        if (winFlg) {
           // 「win!」を表示させる
           this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp', true)
         }
-        setTimeout(func, 0)
-      }
-      if (xFlg) {
-        // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応
-        const func = () => {
+        if (xFlg) {
           // 「x」を表示させる
           this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp', true)
         }
-        setTimeout(func, 0)
       }
+      setTimeout(func, 0)
     },
     // 参加者からマウスを離したとき
     mouseleavePartic (r, idx, type) {
