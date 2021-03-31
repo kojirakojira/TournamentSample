@@ -1,21 +1,5 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-      </v-col>
-    </v-row>
     <TournamentEdit :tnmObj="tnmObj" ref="tnmEdit" />
     <v-row>
       <v-col>

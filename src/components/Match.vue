@@ -16,7 +16,8 @@
           color="info"
           v-show="match['partic' + type].detailsDisp"
           class="details-btn"
-          x-small>表示</v-btn>
+          x-small
+          @click="disp(type)">表示</v-btn>
         <v-btn v-show="match['partic' + type].xDisp" small fab class="x-btn" @click="cancel(round, index, type)">×</v-btn>
         <input type="tel" class="point-input" v-model="match['partic' + type].point" />
     </div>
@@ -175,6 +176,9 @@ export default {
           this.$set(this.tnmObj['3rd-pp'], ['partic' + type], null)
         }
       }
+    },
+    disp (type) {
+      this.$emit('dialog', this.match['partic' + type])
     }
   }
 }

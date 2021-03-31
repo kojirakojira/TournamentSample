@@ -1,4 +1,34 @@
 <template>
+  <div>
+    <v-row>
+      <v-col style="padding-bottom:0px;">
+        <v-btn
+          elevation="2"
+          outlined
+          rounded
+          tile
+          small
+          @click="onSwipeRight"
+        >
+          <v-icon small>
+            mdi-arrow-left-bold-outline
+          </v-icon>
+        </v-btn>
+        <v-btn
+          elevation="2"
+          outlined
+          rounded
+          tile
+          small
+          style="margin-left:2px;"
+          @click="onSwipeLeft"
+        >
+          <v-icon small>
+            mdi-arrow-right-bold-outline
+          </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col style="overflow: hidden;">
         <div
@@ -16,9 +46,25 @@
                       </div>
                       <div class="partics">
                         <!-- 参加者1 -->
-                        <Match :match="m" :round="r" :index="idx" :type="1" :tnm-obj="tnmObj" :pp3rd-flg="pp3rdFlg" :log2="log2" />
+                        <Match
+                          :match="m"
+                          :round="r"
+                          :index="idx"
+                          :type="1"
+                          :tnm-obj="tnmObj"
+                          :pp3rd-flg="pp3rdFlg"
+                          :log2="log2"
+                          @dialog="openDialog" />
                         <!-- 参加者2 -->
-                        <Match :match="m" :round="r" :index="idx" :type="2" :tnm-obj="tnmObj" :pp3rd-flg="pp3rdFlg" :log2="log2" />
+                        <Match
+                          :match="m"
+                          :round="r"
+                          :index="idx"
+                          :type="2"
+                          :tnm-obj="tnmObj"
+                          :pp3rd-flg="pp3rdFlg"
+                          :log2="log2"
+                          @dialog="openDialog" />
                         <!-- partic-win-cトーナメント表の線を表示するためのclass -->
                         <div :class="winClassSelector(r, m)" />
                       </div>
@@ -39,18 +85,30 @@
             </div>
           </div>
         </div>
+      <v-dialog
+        v-if="current"
+        v-model="dialogFlg"
+        fullscreen
+        scrollable
+        transition="dialog-bottom-transition"
+      >
+        <ParticDialog :id="current.id" :name="current.name" @close="dialogFlg = false" />
+      </v-dialog>
       </v-col>
     </v-row>
+  </div>
 </template>
 
 <script>
 import Match from '@/components/Match'
 import Match3rdpp from '@/components/Match3rdpp'
+import ParticDialog from '@/components/ParticDialog'
 export default {
   name: 'TournamentEdit',
   components: {
     Match,
-    Match3rdpp
+    Match3rdpp,
+    ParticDialog
   },
   data () {
     return {
@@ -62,7 +120,11 @@ export default {
 
       log2: 1, // 何回戦まであるか
       heightArr: [],
-      headers: []
+      headers: [],
+
+      // ダイアログ
+      current: null,
+      dialogFlg: false
     }
   },
   filters: {
@@ -298,6 +360,11 @@ export default {
         }
         setTimeout(func, 1000)
       }
+    },
+    openDialog (partic) {
+      console.log(partic)
+      this.current = partic
+      this.dialogFlg = true
     },
     getTnmObj () {
       return JSON.stringify(this.tnmObj)
