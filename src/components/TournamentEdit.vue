@@ -6,111 +6,33 @@
           v-touch-events:swipe.right="onSwipeRight"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
-          <div v-for="r of log" :key="r">
+          <div v-for="r of log2" :key="r">
             <div :class="rounds[r - 1]">
               <div class="header">{{ headers[r - 1] }}</div>
               <div class="matches">
-                  <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log ? 'match' : 'match match-c'">
+                  <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log2 ? 'match' : 'match match-c'">
                       <div class="match-number">
                           {{ m.mid | midFilter }}
                       </div>
                       <div class="partics">
                         <!-- 参加者1 -->
-                        <div
-                          v-if="m.partic1"
-                          @mouseenter="mouseenterPartic(r, idx, 1)"
-                          @mouseleave="mouseleavePartic(r, idx, 1)"
-                          :class="classSelector(m.partic1, 1)">
-                            {{ m.partic1.name + ' #' + m.partic1.id }}
-                            <v-btn
-                              color="info"
-                              v-show="m.partic1.detailsDisp"
-                              class="details-btn"
-                              x-small>表示</v-btn>
-                            <v-btn
-                              color="error"
-                              v-show="m.partic1.winDisp"
-                              class="win-btn"
-                              x-small
-                              @click="win(r, idx, 1)">win!</v-btn>
-                            <v-btn v-show="m.partic1.xDisp" small fab class="x-btn" @click="cancel(r, idx, 1)">×</v-btn>
-                            <input type="tel" class="point-input" v-model="m.partic1.point" />
-                        </div>
-                        <div v-else class="partic partic-null" />
+                        <Match :match="m" :round="r" :index="idx" :type="1" :tnm-obj="tnmObj" :pp3rd-flg="pp3rdFlg" :log2="log2" />
                         <!-- 参加者2 -->
-                        <div
-                          v-if="m.partic2"
-                          @mouseenter="mouseenterPartic(r, idx, 2)"
-                          @mouseleave="mouseleavePartic(r, idx, 2)"
-                          :class="classSelector(m.partic2, 2)">
-                            {{ m.partic2.name + ' #' + m.partic2.id }}
-                            <v-btn
-                              color="info"
-                              v-show="m.partic2.detailsDisp"
-                              class="details-btn"
-                              x-small>表示</v-btn>
-                            <v-btn
-                              color="error"
-                              v-show="m.partic2.winDisp"
-                              class="win-btn"
-                              x-small
-                              @click="win(r, idx, 2)">win!</v-btn>
-                            <v-btn v-show="m.partic2.xDisp" small fab class="x-btn" @click="cancel(r, idx, 2)">×</v-btn>
-                            <input type="tel" class="point-input" v-model="m.partic2.point" />
-                        </div>
-                        <div v-else class="partic partic-null" />
+                        <Match :match="m" :round="r" :index="idx" :type="2" :tnm-obj="tnmObj" :pp3rd-flg="pp3rdFlg" :log2="log2" />
                         <!-- partic-win-cトーナメント表の線を表示するためのclass -->
                         <div :class="winClassSelector(r, m)" />
                       </div>
                   </div>
                   <!-- 3位決定戦 -->
-                  <div v-if="r === log && pp3rdFlg" id="pp-3rd">
+                  <div v-if="r === log2 && pp3rdFlg" id="pp-3rd">
                       <div class="match-number">
                           3rd
                       </div>
                       <div class="partics">
-                        <div
-                          v-if="tnmObj['3rd-pp'].partic1"
-                          @mouseenter="mouseenter3rdpp(1)"
-                          @mouseleave="mouseleave3rdpp(1)"
-                          :class="classSelector(tnmObj['3rd-pp'].partic1, 1)">
-                            {{ tnmObj['3rd-pp'].partic1.name + ' #' + tnmObj['3rd-pp'].partic1.id }}
-                            <v-btn
-                              color="info"
-                              v-show="tnmObj['3rd-pp'].partic1.detailsDisp"
-                              class="details-btn"
-                              x-small>表示</v-btn>
-                            <v-btn
-                              color="error"
-                              v-show="tnmObj['3rd-pp'].partic1.winDisp"
-                              class="win-btn"
-                              x-small
-                              @click="win3rd(1)">win!</v-btn>
-                            <v-btn v-show="tnmObj['3rd-pp'].partic1.xDisp" @click="cancel3rd()" small fab class="x-btn">×</v-btn>
-                            <input type="tel" class="point-input" v-model="tnmObj['3rd-pp'].partic1.point" />
-                        </div>
-                        <div v-else class="partic partic-null" />
-                        <div
-                          v-if="tnmObj['3rd-pp'].partic2"
-                          @mouseenter="mouseenter3rdpp(2)"
-                          @mouseleave="mouseleave3rdpp(2)"
-                          :class="classSelector(tnmObj['3rd-pp'].partic2, 2)">
-                            {{ tnmObj['3rd-pp'].partic2.name + ' #' + tnmObj['3rd-pp'].partic2.id }}
-                            <v-btn
-                              color="info"
-                              v-show="tnmObj['3rd-pp'].partic2.detailsDisp"
-                              class="details-btn"
-                              x-small>表示</v-btn>
-                            <v-btn
-                              color="error"
-                              v-show="tnmObj['3rd-pp'].partic2.winDisp"
-                              class="win-btn"
-                              x-small
-                              @click="win3rd(2)">win!</v-btn>
-                            <v-btn v-show="tnmObj['3rd-pp'].partic2.xDisp" @click="cancel3rd()" small fab class="x-btn">×</v-btn>
-                            <input class="point-input" type="tel" v-model="tnmObj['3rd-pp'].partic2.point" />
-                        </div>
-                        <div v-else class="partic partic-null" />
+                        <!-- 参加者1 -->
+                        <Match3rdpp :tnm-obj="tnmObj" :type="1" />
+                        <!-- 参加者2 -->
+                        <Match3rdpp :tnm-obj="tnmObj" :type="2" />
                       </div>
                   </div>
               </div>
@@ -122,8 +44,14 @@
 </template>
 
 <script>
+import Match from '@/components/Match'
+import Match3rdpp from '@/components/Match3rdpp'
 export default {
   name: 'TournamentEdit',
+  components: {
+    Match,
+    Match3rdpp
+  },
   data () {
     return {
       pp3rdFlg: false,
@@ -132,7 +60,7 @@ export default {
       particCount: 64,
       now: 1, // 何回戦目までスライドした状態か
 
-      log: 1, // 何回戦まであるか
+      log2: 1, // 何回戦まであるか
       heightArr: [],
       headers: []
     }
@@ -165,8 +93,8 @@ export default {
     }
 
     // 何回戦まで必要かを求める
-    this.log = Math.ceil(Math.log2(this.particCount))
-    for (let i = 0; i < this.log; i++) {
+    this.log2 = Math.ceil(Math.log2(this.particCount))
+    for (let i = 0; i < this.log2; i++) {
       this.rounds.push('round-' + (i * 1 + 1))
 
       // ヘッダ生成
@@ -182,7 +110,7 @@ export default {
       zentai.style.height = zentai.clientHeight + 'px'
     })
 
-    this.pp3rdFlg = this.tnmObj['3rd-pp']
+    this.pp3rdFlg = !!this.tnmObj['3rd-pp']
   },
   methods: {
     // ヘッダ部分の生成
@@ -195,16 +123,16 @@ export default {
         }
       }
       let header = (i * 1 + 1) + '回戦'
-      if (i === this.log - 2) {
+      if (i === this.log2 - 2) {
         header = '準決勝'
-      } else if (i === this.log - 1) {
+      } else if (i === this.log2 - 1) {
         header = '決勝'
       }
       return header + time
     },
     // cssをヘッダに追加しておく
     createStyle () {
-      for (let i = 1; i < this.log; i++) {
+      for (let i = 1; i < this.log2; i++) {
         const round = i * 1 + 1
         // matchesのmargin-topを設定
         let newStyle = document.createElement('style')
@@ -286,13 +214,6 @@ export default {
       }
       return count
     },
-    classSelector (partic, type) {
-      if (partic.win) {
-        return 'partic partic-win' + type
-      } else {
-        return 'partic partic-lose' + type
-      }
-    },
     winClassSelector (r, m) {
       if (r !== 1 && m.partic1 && m.partic2 && (m.partic1.win || m.partic2.win)) {
         return 'partic-win-c'
@@ -302,11 +223,11 @@ export default {
     },
     // 左にスワイプにしたとき
     onSwipeLeft () {
-      if (this.now === this.log) {
+      if (this.now === this.log2) {
         return
       }
       const zentai = document.getElementById('zentai')
-      this.position -= (zentai.clientWidth / this.log)
+      this.position -= (zentai.clientWidth / this.log2)
       zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
 
       // heightを変える(基準値は254pxとする)
@@ -324,7 +245,7 @@ export default {
 
       // クラスを切り替える
       let c = 1
-      for (let i = this.now; i < this.log; i++) {
+      for (let i = this.now; i < this.log2; i++) {
         this.rounds.splice(i, 1, 'round-' + (c++))
       }
       if (this.now - 1 >= 0) {
@@ -338,11 +259,11 @@ export default {
         return
       }
       const zentai = document.getElementById('zentai')
-      this.position += (zentai.clientWidth / this.log)
+      this.position += (zentai.clientWidth / this.log2)
       zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
       this.now--
       // クラスを切り替える
-      for (let i = this.now; i < this.log; i++) {
+      for (let i = this.now; i < this.log2; i++) {
         this.rounds.splice(i, 1, 'round-' + (this.rounds[i].slice(-1) * 1 + 1))
       }
       if (this.now - 1 >= 0) {
@@ -351,143 +272,6 @@ export default {
       // heightを変える
       this.heightArr.pop()
       zentai.style.height = this.heightArr.slice(-1)
-    },
-    // 参加者にマウスを当てたとき
-    mouseenterPartic (r, idx, type) {
-      // 次のラウンドの位置を求める
-      const x = r * 1 + 1
-      const y = Math.ceil((idx * 1 + 1) / 2)
-      const partic = (idx * 1 + 1) / 2 !== y ? 'partic1' : 'partic2'
-
-      // 決勝またはそのラウンドの勝者が決まっていない場合
-      let winFlg = false
-      let xFlg = false
-      const m = this.tnmObj['r' + r][idx]
-      if (this.log === r) {
-      // 決勝
-        if (m['partic' + type]) {
-          xFlg = true
-        }
-        if (m.partic1 && m.partic2 && !(m.partic1.win || m.partic2.win)) {
-          winFlg = true
-        }
-      } else {
-        // 決勝以外
-        if (!this.tnmObj['r' + x][y - 1][partic]) {
-          // 次のラウンドにparticが存在していない場合
-          if (r === 1 || (this.tnmObj['r' + r][idx].partic1 && this.tnmObj['r' + r][idx].partic2)) {
-            winFlg = true
-          }
-          // 1回戦の場合はxボタン非表示
-          xFlg = r !== 1
-        }
-      }
-
-      // Android版firefoxでparticラベルタップでwin()が実行される不具合の対応。
-      const func = () => {
-        // 「表示」を表示
-        this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'detailsDisp', true)
-
-        if (winFlg) {
-          // 「win!」を表示させる
-          this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp', true)
-        }
-        if (xFlg) {
-          // 「x」を表示させる
-          this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp', true)
-        }
-      }
-      setTimeout(func, 0)
-    },
-    // 参加者からマウスを離したとき
-    mouseleavePartic (r, idx, type) {
-      // 「表示」を削除する
-      this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'detailsDisp')
-      // 「win!」を削除する
-      this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'winDisp')
-      // 「x」を削除する
-      this.$delete(this.tnmObj['r' + r][idx]['partic' + type], 'xDisp')
-    },
-    // 3位決定戦にマウスを当てたとき
-    mouseenter3rdpp (type) {
-      const m = this.tnmObj['3rd-pp']
-      if (m.partic1 && m.partic2) {
-        if (!(m.partic1.win || m.partic2.win)) {
-          this.$set(this.tnmObj['3rd-pp']['partic' + type], 'winDisp', true)
-        } else {
-          this.$set(this.tnmObj['3rd-pp']['partic' + type], 'xDisp', true)
-        }
-      }
-    },
-    // 3位決定戦からマウスを離したとき
-    mouseleave3rdpp (type) {
-      this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'winDisp')
-      this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'xDisp')
-    },
-    win (r, idx, type) {
-      this.$set(this.tnmObj['r' + r][idx]['partic' + type], 'win', 1)
-
-      // 次のラウンドの位置を求める
-      const x = r * 1 + 1
-      const y = Math.ceil((idx * 1 + 1) / 2)
-      const partic = (idx * 1 + 1) / 2 !== y ? 'partic1' : 'partic2'
-
-      // 次のラウンドにセット
-      if (r !== this.log) {
-        const obj = {
-          id: this.tnmObj['r' + r][idx]['partic' + type].id,
-          name: this.tnmObj['r' + r][idx]['partic' + type].name,
-          win: 0,
-          point: ''
-        }
-        this.$set(this.tnmObj['r' + x][y - 1], partic, obj)
-
-        // 準決勝の場合は3位決定戦にも追加
-        if (this.pp3rdFlg && r === this.log - 1) {
-          const opp = type === 1 ? 2 : 1
-          const oppObj = {
-            id: this.tnmObj['r' + r][idx]['partic' + opp].id,
-            name: this.tnmObj['r' + r][idx]['partic' + opp].name,
-            win: 0,
-            point: ''
-          }
-          this.$set(this.tnmObj['3rd-pp'], 'partic' + (idx * 1 + 1), oppObj)
-        }
-      }
-      // 表示を消す
-      this.mouseleavePartic(r, idx, type)
-    },
-    // 進めたparticを取り消す、そうでない場合はそのラウンドのユーザを取り消す
-    cancel (r, idx, type) {
-      const m = this.tnmObj['r' + r][idx]
-      if (m.partic1 && m.partic2 && (m.partic1.win || m.partic2.win)) {
-        // winを確定していた場合はwinを取り消す
-        this.$set(this.tnmObj['r' + r][idx].partic1, 'win', 0)
-        this.$set(this.tnmObj['r' + r][idx].partic2, 'win', 0)
-      } else {
-        // winが確定していない場合はparticを取り消す
-        this.$set(this.tnmObj['r' + r][idx], ['partic' + type], null)
-        // 1回戦前のマッチIDを求め、勝ち状態を削除
-        let prMatch = (idx * 1 + 1) * 2
-        prMatch = type === 1 ? prMatch - 2 : prMatch - 1
-        this.$set(this.tnmObj['r' + (r - 1)][prMatch].partic1, 'win', 0)
-        this.$set(this.tnmObj['r' + (r - 1)][prMatch].partic2, 'win', 0)
-
-        // 決勝かつ3位決定戦ありの場合
-        if (this.pp3rdFlg && r === this.log) {
-          this.$set(this.tnmObj['3rd-pp'], ['partic' + type], null)
-        }
-      }
-    },
-    win3rd (type) {
-      const m = this.tnmObj['3rd-pp']
-      if (m.partic1 && m.partic2 && !(m.partic1.win || m.partic2.win)) {
-        this.$set(this.tnmObj['3rd-pp']['partic' + type], 'win', 1)
-      }
-    },
-    cancel3rd () {
-      this.$set(this.tnmObj['3rd-pp'].partic1, 'win', 0)
-      this.$set(this.tnmObj['3rd-pp'].partic2, 'win', 0)
     },
     getTnmObj () {
       return JSON.stringify(this.tnmObj)
@@ -511,191 +295,6 @@ export default {
 // }
 </script>
 
-<style scoped>
-#zentai {
-    cursor: move;
-    box-sizing: border-box;
-    user-select: none;
-    display: inline-flex;
-    background-color: black;
-    width: max-content;
-    position: relative;
-    transition-duration: 1s;
-    overflow: hidden;
-}
-.header {
-    padding-left: 6px;
-    padding-right: 6px;
-    margin: 6px;
-    background-color: white;
-    text-align: center;
-}
-.matches {
-    width: 260px;
-    margin-left: 12px;
-    margin-right: 12px;
-    position: relative;
-    transition-duration: 0.6s;
-}
-.match {
-    margin-top: 12px;
-    margin-bottom: 12px;
-    position: relative;
-    transition-duration: 0.6s;
-}
-.match-number {
-    position: absolute;
-    background-color: white;
-    height: 54px;
-    line-height: 54px;
-    text-align: center;
-    font-weight: bold;
-    width: 24px;
-    font-size: 0.8em;
-}
-.partics {
-    margin-left: 21px;
-    font-size: 0.8em;
-}
-.partic {
-    cursor: pointer;
-}
-.partic-win1 {
-    padding-left: 3px;
-    padding-right: 6px;
-    margin: 6px;
-    height: 24px;
-    line-height: 24px;
-    position: relative;
-    background-color: gold;
-}
-.partic-lose1 {
-    padding-left: 3px;
-    padding-right: 6px;
-    margin: 6px;
-    height: 24px;
-    line-height: 24px;
-    position: relative;
-    background-color: gray;
-}
-.partic-win2 {
-    padding-left: 3px;
-    padding-right: 6px;
-    margin: 6px;
-    height: 24px;
-    line-height: 24px;
-    position: relative;
-    background-color: gold;
-}
-.partic-lose2 {
-    padding-left: 3px;
-    padding-right: 6px;
-    margin: 6px;
-    height: 24px;
-    line-height: 24px;
-    position: relative;
-    background-color: gray;
-}
-.partic-null {
-    content: 'null';
-    padding-left: 3px;
-    padding-right: 6px;
-    margin: 6px;
-    height: 24px;
-    line-height: 24px;
-    position: relative;
-    background-color: gray;
-}
-.point {
-    background-color: white;
-    position: absolute;
-    z-index: 1;
-    padding: 0px;
-    text-align: center;
-    width: 24px;
-    top: 0px;
-    right: 0px;
-    font-weight: bold;
-}
-/** 動的な部分 */
-/* .round-2 .matches .match:after {
-    content: "";
-    top: -6px;
-    border-bottom:3px solid white;
-    height: 66px;
-    position: absolute;
-    z-index: 0;
-    width: 10px;
-    left: -23px;
-    border-top: 3px solid white;
-    border-right: 3px solid white;
-} */
-/* .matches .partic-win1:before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    height: 34px;
-    top: -6px;
-    left: -50px;
-    width: 10px;
-    border-top: 3px solid gold;
-    border-right: 3px solid gold;
-}
-.matches .partic-win2:before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    height: 34px;
-    top: -1px;
-    left: -50px;
-    width: 10px;
-    border-bottom: 3px solid gold;
-    border-right: 3px solid gold;
-} */
-/* .matches .partic-win-c:before {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    height: 35px;
-    top: -6px;
-    left: -15px;
-    width: 10px;
-    border-bottom: 3px solid gold;
-} */
-#pp-3rd {
-    margin-top: 30px;
-}
-.point-input {
-    background-color: white;
-    position: absolute;
-    z-index: 1;
-    padding: 0px;
-    text-align: center;
-    width: 24px;
-    top: 0px;
-    right: 0px;
-    font-weight: bold;
-}
-.details-btn {
-  padding: 0px !important;
-  position: absolute;
-  z-index: 3;
-  top: 2px;
-  right: 56px;
-}
-.x-btn {
-  width: 16px !important;
-  height: 16px !important;
-  position: absolute;
-  z-index: 2px;
-  top: 4px;
-  right: 33px;
-}
-.win-btn {
-  padding: 0px !important;
-  position: absolute;
-  z-index: 3;
-  top: 2px;
-  right: 100px;
-}
+<style>
+@import '../assets/tournament.css';
 </style>

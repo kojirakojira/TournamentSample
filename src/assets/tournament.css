@@ -1,0 +1,187 @@
+
+#zentai {
+    cursor: move;
+    box-sizing: border-box;
+    user-select: none;
+    display: inline-flex;
+    background-color: black;
+    width: max-content;
+    position: relative;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+.header {
+    padding-left: 6px;
+    padding-right: 6px;
+    margin: 6px;
+    background-color: white;
+    text-align: center;
+}
+.matches {
+    width: 260px;
+    margin-left: 12px;
+    margin-right: 12px;
+    position: relative;
+    transition-duration: 0.6s;
+}
+.match {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    position: relative;
+    transition-duration: 0.6s;
+}
+.match-number {
+    position: absolute;
+    background-color: white;
+    height: 54px;
+    line-height: 54px;
+    text-align: center;
+    font-weight: bold;
+    width: 24px;
+    font-size: 0.8em;
+}
+.partics {
+    margin-left: 21px;
+    font-size: 0.8em;
+}
+.partic {
+    cursor: pointer;
+}
+.partic-win1 {
+    padding-left: 3px;
+    padding-right: 6px;
+    margin: 6px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    background-color: gold;
+}
+.partic-lose1 {
+    padding-left: 3px;
+    padding-right: 6px;
+    margin: 6px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    background-color: gray;
+}
+.partic-win2 {
+    padding-left: 3px;
+    padding-right: 6px;
+    margin: 6px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    background-color: gold;
+}
+.partic-lose2 {
+    padding-left: 3px;
+    padding-right: 6px;
+    margin: 6px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    background-color: gray;
+}
+.partic-null {
+    content: 'null';
+    padding-left: 3px;
+    padding-right: 6px;
+    margin: 6px;
+    height: 24px;
+    line-height: 24px;
+    position: relative;
+    background-color: gray;
+}
+.point {
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    padding: 0px;
+    text-align: center;
+    width: 24px;
+    top: 0px;
+    right: 0px;
+    font-weight: bold;
+}
+/** 動的な部分 */
+/* .round-2 .matches .match:after {
+    content: "";
+    top: -6px;
+    border-bottom:3px solid white;
+    height: 66px;
+    position: absolute;
+    z-index: 0;
+    width: 10px;
+    left: -23px;
+    border-top: 3px solid white;
+    border-right: 3px solid white;
+} */
+/* .matches .partic-win1:before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    height: 34px;
+    top: -6px;
+    left: -50px;
+    width: 10px;
+    border-top: 3px solid gold;
+    border-right: 3px solid gold;
+}
+.matches .partic-win2:before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    height: 34px;
+    top: -1px;
+    left: -50px;
+    width: 10px;
+    border-bottom: 3px solid gold;
+    border-right: 3px solid gold;
+} */
+/* .matches .partic-win-c:before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    height: 35px;
+    top: -6px;
+    left: -15px;
+    width: 10px;
+    border-bottom: 3px solid gold;
+} */
+#pp-3rd {
+    margin-top: 30px;
+}
+.point-input {
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    padding: 0px;
+    text-align: center;
+    width: 24px;
+    top: 0px;
+    right: 0px;
+    font-weight: bold;
+}
+.details-btn {
+  padding: 0px !important;
+  position: absolute;
+  z-index: 3;
+  top: 2px;
+  right: 56px;
+}
+.x-btn {
+  width: 16px !important;
+  height: 16px !important;
+  position: absolute;
+  z-index: 2px;
+  top: 4px;
+  right: 33px;
+}
+.win-btn {
+  padding: 0px !important;
+  position: absolute;
+  z-index: 3;
+  top: 2px;
+  right: 100px;
+}
