@@ -107,7 +107,7 @@ export default {
     // for (let i = 0; i < 64; i++) {
     //   this.partics.push(i + 1)
     // }
-    const tnmInfo = '{"r1":[{"mid":"4-1","partic1":{"id":"33","name":"あいうえお","win":0, "point":""}, "partic2":{"id":"36","name":"なにぬねの5","win":0, "point":""}},{"mid":"4-2","partic1":{"id":"33","name":"かきくけこ6","win":0, "point":""}, "partic2":{"id":"36","name":"さしすせそ2","win":0, "point":""}},{"mid":"4-3","partic1":{"id":"33","name":"まみむめも6","win":0, "point":""}, "partic2":{"id":"36","name":"さしすせそ7","win":0, "point":""}},{"mid":"4-4","partic1":{"id":"33","name":"やゆよああ7","win":0, "point":""}, "partic2":{"id":"36","name":"かきくけこ4","win":0, "point":""}}],"r2":[{"mid":"5-1","partic1":null, "partic2":null},{"mid":"5-2","partic1":null, "partic2":null}],"r3":[{"mid":"6-1","partic1":null, "partic2":null}],"3rd-pp":{"mid":"3rd-1","partic1":null, "partic2":null},"time":{"r1":"3/28 3:50", "r2":"3/29 3:50","r3":"3/30 3:50","r4":"3/31 3:50","r5":"4/1 3:50","r6":"4/2 3:50"}}'
+    const tnmInfo = '{"r1":[{"mid":"4-1","partic1":{"id":"33","name":"あいうえお","win":1, "point":2}, "partic2":{"id":"36","name":"なにぬねの5","win":0, "point":1}},{"mid":"4-2","partic1":{"id":"33","name":"かきくけこ6","win":0, "point":1}, "partic2":{"id":"36","name":"さしすせそ2","win":1, "point":2}}],"r2":[{"mid":"6-1","partic1":null, "partic2":null}],"3rd-pp":{"mid":"3rd-1","partic1":null, "partic2":null},"time":{"r1":"3/28 3:50", "r2":"3/29 3:50","r3":"3/30 3:50","r4":"3/31 3:50","r5":"4/1 3:50","r6":"4/2 3:50"}}'
     this.tnmObj = JSON.parse(tnmInfo)
   },
   data: () => ({

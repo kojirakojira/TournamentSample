@@ -17,7 +17,7 @@
           class="win-btn"
           x-small
           @click="win3rd(type)">win!</v-btn>
-        <v-btn v-show="tnmObj['3rd-pp']['partic' + type].xDisp" @click="cancel3rd()" small fab class="x-btn">×</v-btn>
+        <v-btn v-show="tnmObj['3rd-pp']['partic' + type].xDisp" @click="cancel3rd(type)" small fab class="x-btn">×</v-btn>
         <input type="tel" class="point-input" v-model="tnmObj['3rd-pp']['partic' + type].point" />
     </div>
     <div v-else class="partic partic-null" />
@@ -48,6 +48,7 @@ export default {
     // 3位決定戦にマウスを当てたとき
     mouseenter3rdpp (type) {
       const m = this.tnmObj['3rd-pp']
+      this.$set(this.tnmObj['3rd-pp']['partic' + type], 'detailsDisp', true)
       if (m.partic1 && m.partic2) {
         if (!(m.partic1.win || m.partic2.win)) {
           this.$set(this.tnmObj['3rd-pp']['partic' + type], 'winDisp', true)
@@ -58,6 +59,7 @@ export default {
     },
     // 3位決定戦からマウスを離したとき
     mouseleave3rdpp (type) {
+      this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'detailsDisp')
       this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'winDisp')
       this.$delete(this.tnmObj['3rd-pp']['partic' + type], 'xDisp')
     },
@@ -66,10 +68,12 @@ export default {
       if (m.partic1 && m.partic2 && !(m.partic1.win || m.partic2.win)) {
         this.$set(this.tnmObj['3rd-pp']['partic' + type], 'win', 1)
       }
+      this.mouseleave3rdpp(type)
     },
-    cancel3rd () {
+    cancel3rd (type) {
       this.$set(this.tnmObj['3rd-pp'].partic1, 'win', 0)
       this.$set(this.tnmObj['3rd-pp'].partic2, 'win', 0)
+      this.mouseleave3rdpp(type)
     }
   }
 }

@@ -7,16 +7,16 @@
       :class="classSelector(match['partic' + type], type)">
         {{ match['partic' + type].name + ' #' + match['partic' + type].id }}
         <v-btn
-          color="info"
-          v-show="match['partic' + type].detailsDisp"
-          class="details-btn"
-          x-small>表示</v-btn>
-        <v-btn
           color="error"
           v-show="match['partic' + type].winDisp"
           class="win-btn"
           x-small
           @click="win(round, index, type)">win!</v-btn>
+        <v-btn
+          color="info"
+          v-show="match['partic' + type].detailsDisp"
+          class="details-btn"
+          x-small>表示</v-btn>
         <v-btn v-show="match['partic' + type].xDisp" small fab class="x-btn" @click="cancel(round, index, type)">×</v-btn>
         <input type="tel" class="point-input" v-model="match['partic' + type].point" />
     </div>
