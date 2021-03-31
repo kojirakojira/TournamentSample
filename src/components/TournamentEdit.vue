@@ -229,7 +229,8 @@ export default {
         style += 'content: "";'
         style += 'top:' + top + 'px;'
         style += 'height:' + height + 'px;'
-        style += 'position:absolute;z-index:0;width:10px;left:-23px;border-bottom:3px solid white;border-top:3px solid white;border-right:3px solid white;}'
+        style += 'position:absolute;z-index:0;width:10px;left:-23px;border-bottom:3px solid white;'
+        style += 'border-top:3px solid white;border-right:3px solid white;transition-duration: 0.6s;}'
         newStyle.innerHTML = style
         document.getElementsByTagName('head').item(0).appendChild(newStyle)
 
@@ -239,7 +240,7 @@ export default {
         style += 'content:"";position:absolute;z-index: 1;'
         style += 'height:' + Math.floor(height / 2) + 'px;'
         style += 'top:' + top + 'px;'
-        style += 'left:-50px;width:10px;border-top:3px solid gold;border-right:3px solid gold;'
+        style += 'left:-50px;width:10px;border-top:3px solid gold;border-right:3px solid gold;transition-duration: 0.6s;'
         newStyle.innerHTML = style
         document.getElementsByTagName('head').item(0).appendChild(newStyle)
 
