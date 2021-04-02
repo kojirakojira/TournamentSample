@@ -13,6 +13,9 @@
         <div
           v-touch-events:start="start"
           v-touch-events:end="end"
+          @touchstart="touchstart"
+          @touchend="touchend"
+          @touchmove="touchmove"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
           <div v-for="r of log2" :key="r">
@@ -133,7 +136,8 @@ export default {
       current: null,
       dialogFlg: false,
 
-      startEvent: null
+      startEvent: null,
+      moveEvent: null
     }
   },
   filters: {
@@ -369,12 +373,29 @@ export default {
       this.current = partic
       this.dialogFlg = true
     },
+    // クリックイベント
     start (e) {
       this.startEvent = e
     },
     end (e) {
       const x = e.clientX - this.startEvent.clientX
       const y = e.clientY - this.startEvent.clientY
+      this.swipe(x, y)
+    },
+    // タップイベント
+    touchstart (e) {
+      this.startEvent = e
+    },
+    touchend () {
+      const x = this.moveEvent.touches[0].clientX - this.startEvent.touches[0].clientX
+      const y = this.moveEvent.touches[0].clientY - this.startEvent.touches[0].clientY
+      this.swipe(x, y)
+    },
+    touchmove (e) {
+      this.moveEvent = e
+    },
+    // スワイプ判定の計算
+    swipe (x, y) {
       if (Math.abs(y) < 100) {
         if (x > 50) {
           this.onSwipeRight()
@@ -382,7 +403,6 @@ export default {
           this.onSwipeLeft()
         }
       }
-      this.startEvent = null
     },
     getTnmObj () {
       return JSON.stringify(this.tnmObj)
