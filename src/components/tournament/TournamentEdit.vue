@@ -1,44 +1,23 @@
 <template>
   <div>
     <v-row>
-      <v-col style="padding-bottom:0px;">
-        <v-btn
-          elevation="2"
-          outlined
-          rounded
-          tile
-          small
-          @click="onSwipeRight"
-        >
-          <v-icon small>
-            mdi-arrow-left-bold-outline
-          </v-icon>
-        </v-btn>
-        <v-btn
-          elevation="2"
-          outlined
-          rounded
-          tile
-          small
-          style="margin-left:2px;"
-          @click="onSwipeLeft"
-        >
-          <v-icon small>
-            mdi-arrow-right-bold-outline
-          </v-icon>
-        </v-btn>
+      <v-col class="headline">
+        <v-icon>
+          mdi-tournament
+        </v-icon>
+        トーナメント表
       </v-col>
     </v-row>
     <v-row>
       <v-col style="overflow: hidden;">
         <div
-          v-touch-events:swipe.left="onSwipeLeft"
-          v-touch-events:swipe.right="onSwipeRight"
+          v-touch-events:start="start"
+          v-touch-events:end="end"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
           <div v-for="r of log2" :key="r">
             <div :class="rounds[r - 1]">
-              <div class="header">{{ headers[r - 1] }}</div>
+              <div class="header">{{ createHeader(tnmObj.time, r) }}</div>
               <div class="matches">
                   <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log2 ? 'match' : 'match match-c'">
                       <div class="match-number">
@@ -96,13 +75,42 @@
       </v-dialog>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col class="headline">
+        <v-icon>
+          mdi-calendar-clock
+        </v-icon>
+        表示スケジュール変更
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col style="padding-top:0px;">
+        <v-container style="padding-top:0px;">
+          <v-row v-for="r of log2" :key="r">
+            <v-col cols="3" md="3" lg="3" xl="3" class="time-input">
+              {{ createHeader(null, r) }}
+            </v-col>
+            <v-col cols="9" md="8" lg="5" xl="5" class="time-input">
+              <v-text-field
+                v-model="tnmObj.time['r' + r]"
+                mix-width="60%"
+                label="時間を入力"
+                single-line
+                hide-details
+                autocomplete="off"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-import Match from '@/components/Match'
-import Match3rdpp from '@/components/Match3rdpp'
-import ParticDialog from '@/components/ParticDialog'
+import Match from '@/components/tournament/Match'
+import Match3rdpp from '@/components/tournament/Match3rdpp'
+import ParticDialog from '@/components/tournament/ParticDialog'
 export default {
   name: 'TournamentEdit',
   components: {
@@ -120,11 +128,12 @@ export default {
 
       log2: 1, // 何回戦まであるか
       heightArr: [],
-      headers: [],
 
       // ダイアログ
       current: null,
-      dialogFlg: false
+      dialogFlg: false,
+
+      startEvent: null
     }
   },
   filters: {
@@ -158,9 +167,6 @@ export default {
     this.log2 = Math.ceil(Math.log2(this.particCount))
     for (let i = 0; i < this.log2; i++) {
       this.rounds.push('round-' + (i * 1 + 1))
-
-      // ヘッダ生成
-      this.headers.push(this.createHeader(this.tnmObj.time, i))
     }
 
     // round-nのクラスを生成する
@@ -177,20 +183,16 @@ export default {
   methods: {
     // ヘッダ部分の生成
     createHeader (timeArr, i) {
-      let time = ''
-      if (timeArr && timeArr.length !== 0) {
-        if (timeArr['r' + (i + 1)]) {
-          // ヘッダに時間を付ける
-          time = '(' + timeArr['r' + (i + 1)] + ')'
-        }
-      }
-      let header = (i * 1 + 1) + '回戦'
-      if (i === this.log2 - 2) {
+      let header = i + '回戦'
+      if (i === this.log2 - 1) {
         header = '準決勝'
-      } else if (i === this.log2 - 1) {
+      } else if (i === this.log2) {
         header = '決勝'
       }
-      return header + time
+      if (timeArr && timeArr['r' + i]) {
+        header += '(' + timeArr['r' + i] + ')'
+      }
+      return header
     },
     // cssをヘッダに追加しておく
     createStyle () {
@@ -367,6 +369,21 @@ export default {
       this.current = partic
       this.dialogFlg = true
     },
+    start (e) {
+      this.startEvent = e
+    },
+    end (e) {
+      const x = e.clientX - this.startEvent.clientX
+      const y = e.clientY - this.startEvent.clientY
+      if (Math.abs(y) < 100) {
+        if (x > 50) {
+          this.onSwipeRight()
+        } else if (x < -50) {
+          this.onSwipeLeft()
+        }
+      }
+      this.startEvent = null
+    },
     getTnmObj () {
       return JSON.stringify(this.tnmObj)
     }
@@ -390,5 +407,11 @@ export default {
 </script>
 
 <style>
-@import '../assets/tournament.css';
+@import './tournament.css';
+.time-input {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  display: flex;
+  align-items:flex-end;
+}
 </style>
