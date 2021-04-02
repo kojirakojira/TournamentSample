@@ -1,14 +1,26 @@
 <template>
+  <div>
+    <v-row>
+      <v-col class="headline">
+        <v-icon>
+          mdi-tournament
+        </v-icon>
+        トーナメント表
+      </v-col>
+    </v-row>
     <v-row>
       <v-col style="overflow: hidden;">
         <div
-          v-touch-events:swipe.left="onSwipeLeft"
-          v-touch-events:swipe.right="onSwipeRight"
+          v-touch-events:start="start"
+          v-touch-events:end="end"
+          @touchstart="start"
+          @touchend="end"
+          @touchmove="move"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
           <div v-for="r of log2" :key="r">
             <div :class="rounds[r - 1]">
-              <div class="header">{{ headers[r - 1] }}</div>
+              <div class="header">{{ createHeader(tnmObj.time, r) }}</div>
               <div class="matches">
                   <div v-for="(m, idx) in tnmObj['r' + r]" :key="idx" :class="r === log2 ? 'match' : 'match match-c'">
                       <div class="match-number">
@@ -48,6 +60,7 @@
                                   {{ tnmObj['3rd-pp'].partic1.point }}
                               </div>
                           </div>
+                          <div v-else class="partic partic-null" />
                           <div
                             v-if="tnmObj['3rd-pp'].partic1"
                             :class="classSelector(tnmObj['3rd-pp'].partic2, 2)">
@@ -56,6 +69,7 @@
                                   {{ tnmObj['3rd-pp'].partic2.point }}
                               </div>
                           </div>
+                          <div v-else class="partic partic-null" />
                       </div>
                   </div>
               </div>
@@ -64,9 +78,11 @@
         </div>
       </v-col>
     </v-row>
+  </div>
 </template>
 
 <script>
+import TournamentUtils from '@/components/tournament/TournamentUtils'
 export default {
   name: 'Tournament',
   data () {
@@ -83,6 +99,7 @@ export default {
       headers: []
     }
   },
+  mixins: [TournamentUtils],
   filters: {
     midFilter (mid) {
       return mid.slice(mid.indexOf('-') + 1, mid.length)
@@ -114,15 +131,13 @@ export default {
     this.log2 = Math.ceil(Math.log2(this.particCount))
     for (let i = 0; i < this.log2; i++) {
       this.rounds.push('round-' + (i * 1 + 1))
-
-      // ヘッダ生成
-      this.headers.push(this.createHeader(this.tnmObj.time, i))
     }
 
     // round-nのクラスを生成する
     this.createStyle()
 
     this.$nextTick(() => {
+      // 1回戦が一番左に表示されているとき、スライドでtransitionアニメーションを発生させるため
       const zentai = document.getElementById('zentai')
       this.roundWidth = (zentai.clientWidth / this.log2)
     })
@@ -130,169 +145,12 @@ export default {
     this.pp3rdFlg = !!this.tnmObj['3rd-pp']
   },
   methods: {
-    // ヘッダ部分の生成
-    createHeader (timeArr, i) {
-      let time = ''
-      if (timeArr && timeArr.length !== 0) {
-        if (timeArr['r' + (i + 1)]) {
-          // ヘッダに時間を付ける
-          time = '(' + timeArr['r' + (i + 1)] + ')'
-        }
-      }
-      let header = (i * 1 + 1) + '回戦'
-      if (i === this.log2 - 2) {
-        header = '準決勝'
-      } else if (i === this.log2 - 1) {
-        header = '決勝'
-      }
-      return header + time
-    },
-    // cssをヘッダに追加しておく
-    createStyle () {
-      for (let i = 1; i < this.log2; i++) {
-        const round = i * 1 + 1
-        // matchesのmargin-topを設定
-        let newStyle = document.createElement('style')
-        let style = '.round-' + round + ' .matches {'
-        // 66 = 24 + 6 + 24 + 12
-        // -21 = 6 - 24 - 3
-        const marginTop = 66 * 2 ** (i - 1) - 21
-        style += 'margin-top:' + marginTop + 'px;}'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // matchのmargin-bottomを設定
-        newStyle = document.createElement('style')
-        style = '.round-' + round + ' .matches > .match.match-c {'
-        style += 'margin-bottom:' + (marginTop * 2 - 12) + 'px;}'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // 一番下のmatchはmargin-bottom:0px
-        newStyle = document.createElement('style')
-        style = '.round-' + round + ' .matches .match:last-child { margin-bottom: 0px; }'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // 表の']'を生成
-        newStyle = document.createElement('style')
-        // 27 = 24 + 3
-        // 33 = -6 - 24 - 3
-        const top = 27 - 33 * 2 ** (i - 1)
-        const height = (top * -1 + 27) * 2 + 3
-        style = '.round-' + round + ' .matches .partics:after {'
-        style += 'content: "";'
-        style += 'top:' + top + 'px;'
-        style += 'height:' + height + 'px;'
-        style += 'position:absolute;z-index:0;width:10px;left:-23px;border-bottom:3px solid white;border-top:3px solid white;border-right:3px solid white;}'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // partic1が勝った場合の線のstyle
-        newStyle = document.createElement('style')
-        style = '.round-' + round + ' .matches .match .partic-win1:before {'
-        style += 'content:"";position:absolute;z-index: 1;'
-        style += 'height:' + Math.floor(height / 2) + 'px;'
-        style += 'top:' + top + 'px;'
-        style += 'left:-50px;width:10px;border-top:3px solid gold;border-right:3px solid gold;'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // partic2が勝った場合の線のstyle
-        newStyle = document.createElement('style')
-        style = '.round-' + round + ' .matches .match .partic-win2:before {'
-        style += 'content:"";position:absolute;z-index: 1;'
-        style += 'height:' + Math.floor(height / 2) + 'px;'
-        style += 'top:-1px;'
-        style += 'left:-50px;width:10px;border-bottom:3px solid gold;border-right:3px solid gold;'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-
-        // partic-win-cのstyle
-        newStyle = document.createElement('style')
-        style = '.round-' + round + ' .matches .match .partic-win-c:before {content:"";position:absolute;'
-        style += 'z-index:1;height:35px;top:-6px;left:-15px;width:10px;border-bottom:3px solid gold;'
-        newStyle.innerHTML = style
-        document.getElementsByTagName('head').item(0).appendChild(newStyle)
-      }
-    },
-    // 参加者数を数える
-    countPartics (tnmObj) {
-      const r1 = tnmObj.r1
-      let count = 0
-      // 1回戦のマッチ数分ループ
-      for (const i in r1) {
-        if (r1[i].partic1) {
-          count++
-        }
-        if (r1[i].partic2) {
-          count++
-        }
-      }
-      return count
-    },
     classSelector (partic, type) {
       if (partic.win) {
         return 'partic partic-win' + type
       } else {
         return 'partic partic-lose' + type
       }
-    },
-    winClassSelector (r, m) {
-      if (r !== 1 && m.partic1 && m.partic2 && (m.partic1.win || m.partic2.win)) {
-        return 'partic-win-c'
-      } else {
-        return ''
-      }
-    },
-    // 左にスワイプにしたとき
-    onSwipeLeft () {
-      if (this.now === this.log2) {
-        return
-      }
-      const zentai = document.getElementById('zentai')
-      this.position -= (zentai.clientWidth / this.log2)
-      zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
-
-      // heightを変える(基準値は254pxとする)
-      let height = 0
-      if (zentai.clientHeight / 2 + 36 > 254) {
-        // トーナメント表全体のheight / 2 + ヘッダー部分
-        height = zentai.clientHeight / 2 + 36 + 'px'
-      } else {
-        // 決勝のheight
-        const final = document.querySelector('.' + this.rounds[this.rounds.length - 1])
-        height = final.clientHeight + 'px'
-      }
-      zentai.style.height = height
-      this.heightArr.push(height)
-
-      // クラスを切り替える
-      let c = 1
-      for (let i = this.now; i < this.log2; i++) {
-        this.rounds.splice(i, 1, 'round-' + (c++))
-      }
-      this.now++
-    },
-    // 右にスワイプしたとき
-    onSwipeRight () {
-      if (this.now === 1) {
-        return
-      }
-      const zentai = document.getElementById('zentai')
-      this.position += (zentai.clientWidth / this.log2)
-      zentai.style.transform = 'translate3d(' + this.position + 'px, 0px, 0px)'
-      this.now--
-      // クラスを切り替える
-      for (let i = this.now; i < this.log2; i++) {
-        this.rounds.splice(i, 1, 'round-' + (this.rounds[i].slice(-1) * 1 + 1))
-      }
-      // heightを変える
-      this.heightArr.pop()
-      zentai.style.height = this.heightArr.slice(-1)
-    },
-    getTnmObj () {
-      return JSON.stringify(this.tnmObj)
     }
   }
 }
@@ -315,5 +173,5 @@ export default {
 </script>
 
 <style>
-@import '../assets/tournament.css';
+@import './tournament.css';
 </style>
