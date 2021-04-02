@@ -18,7 +18,7 @@
           x-small
           @click="win3rd(type)">win!</v-btn>
         <v-btn v-show="tnmObj['3rd-pp']['partic' + type].xDisp" @click="cancel3rd(type)" small fab class="x-btn">×</v-btn>
-        <input type="tel" class="point-input" v-model="tnmObj['3rd-pp']['partic' + type].point" />
+        <input v-if="point" type="tel" class="point-input" v-model="tnmObj['3rd-pp']['partic' + type].point" />
     </div>
     <div v-else class="partic partic-null" />
   </div>
@@ -35,6 +35,10 @@ export default {
     type: {
       type: Number,
       required: true
+    },
+    point: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

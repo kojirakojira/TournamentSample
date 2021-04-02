@@ -19,7 +19,7 @@
           x-small
           @click="disp(type)">表示</v-btn>
         <v-btn v-show="match['partic' + type].xDisp" small fab class="x-btn" @click="cancel(round, index, type)">×</v-btn>
-        <input type="tel" class="point-input" v-model="match['partic' + type].point" />
+        <input v-if="point" type="tel" class="point-input" v-model="match['partic' + type].point" />
     </div>
     <div v-else class="partic partic-null" />
   </div>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: 'match',
+  name: 'Partic',
   props: {
     match: {
       type: Object,
@@ -56,6 +56,10 @@ export default {
     log2: {
       type: Number,
       required: true
+    },
+    point: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

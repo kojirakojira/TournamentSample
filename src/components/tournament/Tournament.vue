@@ -30,7 +30,7 @@
                         <!-- 参加者1 -->
                         <div v-if="m.partic1" :class="classSelector(m.partic1, 1)">
                             {{ m.partic1.name + ' #' + m.partic1.id }}
-                            <div class="point">
+                            <div v-if="point" class="point">
                                 {{ m.partic1.point }}
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                         <!-- 参加者2 -->
                         <div v-if="m.partic2" :class="classSelector(m.partic2, 2)">
                             {{ m.partic2.name + ' #' + m.partic2.id }}
-                            <div class="point">
+                            <div v-if="point" class="point">
                                 {{ m.partic2.point }}
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                             v-if="tnmObj['3rd-pp'].partic1"
                             :class="classSelector(tnmObj['3rd-pp'].partic1, 1)">
                               {{ tnmObj['3rd-pp'].partic1.name + ' #' + tnmObj['3rd-pp'].partic1.id }}
-                              <div class="point">
+                              <div v-if="point" class="point">
                                   {{ tnmObj['3rd-pp'].partic1.point }}
                               </div>
                           </div>
@@ -65,7 +65,7 @@
                             v-if="tnmObj['3rd-pp'].partic1"
                             :class="classSelector(tnmObj['3rd-pp'].partic2, 2)">
                               {{ tnmObj['3rd-pp'].partic2.name + ' #' + tnmObj['3rd-pp'].partic1.id }}
-                              <div class="point">
+                              <div v-if="point" class="point">
                                   {{ tnmObj['3rd-pp'].partic2.point }}
                               </div>
                           </div>
@@ -109,6 +109,10 @@ export default {
     tnmObj: {
       type: Object,
       required: true
+    },
+    point: {
+      type: Boolean,
+      default: false
     }
   },
   async mounted () {

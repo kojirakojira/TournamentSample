@@ -28,7 +28,7 @@
                       </div>
                       <div class="partics">
                         <!-- 参加者1 -->
-                        <Match
+                        <Partic
                           :match="m"
                           :round="r"
                           :index="idx"
@@ -36,9 +36,10 @@
                           :tnm-obj="tnmObj"
                           :pp3rd-flg="pp3rdFlg"
                           :log2="log2"
+                          :point="point"
                           @dialog="openDialog" />
                         <!-- 参加者2 -->
-                        <Match
+                        <Partic
                           :match="m"
                           :round="r"
                           :index="idx"
@@ -46,6 +47,7 @@
                           :tnm-obj="tnmObj"
                           :pp3rd-flg="pp3rdFlg"
                           :log2="log2"
+                          :point="point"
                           @dialog="openDialog" />
                         <!-- partic-win-cトーナメント表の線を表示するためのclass -->
                         <div :class="winClassSelector(r, m)" />
@@ -58,9 +60,9 @@
                       </div>
                       <div class="partics">
                         <!-- 参加者1 -->
-                        <Match3rdpp :tnm-obj="tnmObj" :type="1" />
+                        <Partic3rdpp :tnm-obj="tnmObj" :type="1" :point="point" />
                         <!-- 参加者2 -->
-                        <Match3rdpp :tnm-obj="tnmObj" :type="2" />
+                        <Partic3rdpp :tnm-obj="tnmObj" :type="2" :point="point" />
                       </div>
                   </div>
               </div>
@@ -111,15 +113,15 @@
 </template>
 
 <script>
-import Match from '@/components/tournament/Match'
-import Match3rdpp from '@/components/tournament/Match3rdpp'
+import Partic from '@/components/tournament/Partic'
+import Partic3rdpp from '@/components/tournament/Partic3rdpp'
 import ParticDialog from '@/components/tournament/ParticDialog'
 import TournamentUtils from '@/components/tournament/TournamentUtils'
 export default {
   name: 'TournamentEdit',
   components: {
-    Match,
-    Match3rdpp,
+    Partic,
+    Partic3rdpp,
     ParticDialog
   },
   mixins: [TournamentUtils],
@@ -151,6 +153,10 @@ export default {
     tnmObj: {
       type: Object,
       required: true
+    },
+    point: {
+      type: Boolean,
+      default: false
     }
   },
   async mounted () {
