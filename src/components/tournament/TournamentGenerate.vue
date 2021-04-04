@@ -11,11 +11,8 @@
     <v-row>
       <v-col style="overflow: hidden;">
         <div
-          v-touch-events:start="start"
-          v-touch-events:end="end"
-          @touchstart="start"
-          @touchend="end"
-          @touchmove="move"
+          v-touch-events:swipe.left="onSwipeLeft"
+          v-touch-events:swipe.right="onSwipeRight"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
           <div v-for="r of log2" :key="r">
@@ -26,7 +23,57 @@
                       <div class="match-number">
                           {{ m.mid | midFilter }}
                       </div>
-                      <div class="partics">
+                      <div v-if="r === 1" class="partics">
+                        <!-- 参加者1 -->
+                        <div v-if="!m.partic1 || m.partic1.id !== 'del'" class="partic partic-lose1">
+                            <v-select
+                                v-model="m.partic1"
+                                :items="mPartics"
+                                item-text="name"
+                                item-value="id"
+                                item-disabled="disabled"
+                                label="選択してください。"
+                                return-object
+                                single-line
+                                dense
+                                clearable
+                                @change="change"
+                            >
+                              <template v-slot:selection = "data">
+                                {{ data.item.name }} #{{ data.item.id }}
+                              </template>
+                              <template v-slot:item = "data">
+                                {{ data.item.name }} #{{ data.item.id }}
+                              </template>
+                            </v-select>
+                        </div>
+                        <div v-else class="partic partic-null" />
+                        <!-- 参加者2 -->
+                        <div v-if="!m.partic2 || m.partic2.id !== 'del'" class="partic partic-lose2">
+                            <v-select
+                                v-model="m.partic2"
+                                :items="mPartics"
+                                item-text="name"
+                                item-value="id"
+                                item-disabled="disabled"
+                                label="選択してください。"
+                                return-object
+                                single-line
+                                dense
+                                clearable
+                                @change="change"
+                            >
+                              <template v-slot:selection = "data">
+                                {{ data.item.name }} #{{ data.item.id }}
+                              </template>
+                              <template v-slot:item = "data">
+                                {{ data.item.name }} #{{ data.item.id }}
+                              </template>
+                            </v-select>
+                        </div>
+                        <div v-else class="partic partic-null" />
+                      </div>
+                      <div v-else class="partics">
                         <!-- 参加者1 -->
                         <div v-if="m.partic1" :class="classSelector(m.partic1, 1)">
                             {{ m.partic1.name + ' #' + m.partic1.id }}
@@ -96,7 +143,10 @@ export default {
 
       log2: 1, // 何回戦まであるか
       heightArr: [],
-      headers: []
+      headers: [],
+
+      mPartics: [],
+      bTnmObj: [] // 変更検知用のラウンド1オブジェクト
     }
   },
   mixins: [TournamentUtils],
@@ -109,6 +159,14 @@ export default {
     tnmObj: {
       type: Object,
       required: true
+    },
+    dropDownList: {
+      type: Array,
+      required: true
+    },
+    randFlg: {
+      type: Boolean,
+      default: false
     }
   },
   async mounted () {
@@ -143,14 +201,61 @@ export default {
     })
 
     this.pp3rdFlg = !!this.tnmObj['3rd-pp']
+
+    // トーナメント表生成オリジナル処理
+    this.mPartics = Array.from(this.dropDownList)
+    this.mPartics.sort((a, b) => {
+      let comparison = 0
+      if (a.id > b.id) {
+        comparison = 1
+      } else if (a.id < b.id) {
+        comparison = -1
+      }
+      return comparison
+    })
+    this.mPartics.forEach(p => { p.disabled = this.randFlg })
+    this.bTnmObjR1 = JSON.parse(JSON.stringify(this.tnmObj.r1))
   },
   methods: {
-    classSelector (partic, type) {
-      if (partic.win) {
-        return 'partic partic-win' + type
+    change (v) {
+      if (!v) {
+        this.clear()
       } else {
-        return 'partic partic-lose' + type
+        v.disabled = true
       }
+      this.bTnmObjR1 = JSON.parse(JSON.stringify(this.tnmObj.r1))
+    },
+    clear () {
+      let id
+      // clearボタン押下での変更点を見つける
+      for (const m in this.tnmObj.r1) {
+        for (let i = 1; i <= 2; i++) {
+          if (!this.tnmObj.r1[m][`partic${i}`] && this.bTnmObjR1[m][`partic${i}`]) {
+            id = this.bTnmObjR1[m][`partic${i}`].id
+            break
+          }
+        }
+      }
+      // clearを押したidを活性化
+      this.mPartics.forEach(p => {
+        if (p.id === id) {
+          p.disabled = false
+        }
+      })
+    },
+    getTnmObj () {
+      const tnmObj = JSON.parse(JSON.stringify(this.tnmObj))
+      for (const m of tnmObj.r1) {
+        for (let i = 1; i <= 2; i++) {
+          if (!m[`partic${i}`] || !m[`partic${i}`].id) {
+            alert('未入力の参加者が存在します。')
+            return
+          }
+          delete m[`partic${i}`].disabled
+          if (m[`partic${i}`].id === 'del') m[`partic${i}`] = null
+        }
+      }
+      return tnmObj
     }
   }
 }
@@ -158,4 +263,22 @@ export default {
 
 <style>
 @import './tournament.css';
+.v-select__selection--comma {
+    margin: 0px !important;
+    font-size: 12px;
+}
+.partics .v-text-field * {
+    margin: 0px !important;
+    font-size: 12px;
+}
+.partics .v-select__slot * {
+    position: initial !important;
+}
+.partics .v-select__selections * {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+.v-select-list > .v-list-item {
+    font-size: 12px;
+}
 </style>

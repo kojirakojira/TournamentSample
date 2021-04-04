@@ -36,7 +36,7 @@
                           :tnm-obj="tnmObj"
                           :pp3rd-flg="pp3rdFlg"
                           :log2="log2"
-                          :point="point"
+                          :point="tnmObj.point"
                           @dialog="openDialog" />
                         <!-- 参加者2 -->
                         <Partic
@@ -47,7 +47,7 @@
                           :tnm-obj="tnmObj"
                           :pp3rd-flg="pp3rdFlg"
                           :log2="log2"
-                          :point="point"
+                          :point="tnmObj.point"
                           @dialog="openDialog" />
                         <!-- partic-win-cトーナメント表の線を表示するためのclass -->
                         <div :class="winClassSelector(r, m)" />
@@ -60,9 +60,9 @@
                       </div>
                       <div class="partics">
                         <!-- 参加者1 -->
-                        <Partic3rdpp :tnm-obj="tnmObj" :type="1" :point="point" />
+                        <Partic3rdpp :tnm-obj="tnmObj" :type="1" :point="tnmObj.point" />
                         <!-- 参加者2 -->
-                        <Partic3rdpp :tnm-obj="tnmObj" :type="2" :point="point" />
+                        <Partic3rdpp :tnm-obj="tnmObj" :type="2" :point="tnmObj.point" />
                       </div>
                   </div>
               </div>
@@ -153,10 +153,6 @@ export default {
     tnmObj: {
       type: Object,
       required: true
-    },
-    point: {
-      type: Boolean,
-      default: false
     }
   },
   async mounted () {
