@@ -11,8 +11,11 @@
     <v-row>
       <v-col style="overflow: hidden;">
         <div
-          v-touch-events:swipe.left="onSwipeLeft"
-          v-touch-events:swipe.right="onSwipeRight"
+          v-touch-events:start="start"
+          v-touch-events:end="end"
+          @touchstart="start"
+          @touchend="end"
+          @touchmove="move"
           id="zentai"
           style="transform:translate3d(0px, 0px, 0px);">
           <div v-for="r of log2" :key="r">

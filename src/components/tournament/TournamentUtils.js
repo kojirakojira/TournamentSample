@@ -189,8 +189,13 @@ export default {
     },
     start (e) {
       this.startEvent = e
+      console.log('start')
     },
     end (e) {
+      console.log('end')
+      if (!this.startEvent) {
+        return
+      }
       let x
       let y
       if (e.type === 'mouseup') {
@@ -212,24 +217,11 @@ export default {
           this.onSwipeLeft()
         }
       }
+      this.startEvent = null
     },
     move (e) {
+      console.log('move')
       this.moveEvent = e
     }
   }
-  // class Match {
-  //   constructor (mid, partic1, partic2) {
-  //     this.matchId = mid
-  //     this.partic1 = partic1
-  //     this.partic2 = partic2
-  //   }
-  // }
-  // class Partic {
-  //   constructor (id, name, w, p) {
-  //     this.id = id
-  //     this.name = name
-  //     this.win = w
-  //     this.point = p
-  //   }
-  // }
 }
