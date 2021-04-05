@@ -34,9 +34,18 @@
             <v-row>
               <v-col class="gen-title">
                 ポイント表示
-                <v-icon small>
-                  mdi-help-circle
-                </v-icon>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs}">
+                    <v-icon
+                      small
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      mdi-help-circle
+                    </v-icon>
+                  </template>
+                  <span>勝ち数を表示する欄を追加します。</span>
+                </v-tooltip>
               </v-col>
               <v-col>
                 <v-switch
