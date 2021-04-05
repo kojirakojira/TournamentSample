@@ -128,6 +128,41 @@
         </div>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col class="headline">
+        <v-icon>
+          mdi-calendar-clock
+        </v-icon>
+        スケジュール
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        スケジュールをトーナメント表上に表示できます。<br />
+        ※後から変更可能です。
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col style="padding-top:0px;">
+        <v-container style="padding-top:0px;">
+          <v-row v-for="r of log2" :key="r">
+            <v-col cols="3" md="3" lg="3" xl="3" class="time-input">
+              {{ createHeader(null, r) }}
+            </v-col>
+            <v-col cols="9" md="8" lg="5" xl="5" class="time-input">
+              <v-text-field
+                v-model="tnmObj.time['r' + r]"
+                mix-width="60%"
+                label="時間を入力"
+                single-line
+                hide-details
+                autocomplete="off"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -266,6 +301,12 @@ export default {
 
 <style>
 @import './tournament.css';
+.time-input {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  display: flex;
+  align-items:flex-end;
+}
 .v-select__selection--comma {
     margin: 0px !important;
     font-size: 12px;

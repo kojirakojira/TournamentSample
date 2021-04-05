@@ -85,7 +85,7 @@
         <v-icon>
           mdi-calendar-clock
         </v-icon>
-        表示スケジュール変更
+        スケジュール変更
       </v-col>
     </v-row>
     <v-row>

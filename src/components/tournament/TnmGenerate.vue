@@ -20,21 +20,6 @@
                 {{ partics.length }}
               </v-col>
             </v-row>
-            <!-- <v-row>
-              <v-col class="gen-title">
-                トーナメント表ランダム生成タイプ
-              </v-col>
-              <v-col>
-                <v-radio-group v-model="selGenType">
-                  <v-radio
-                    v-for="g in genType"
-                    :key="g.id"
-                    :label="g.text"
-                    :value="g.id"
-                  ></v-radio>
-                </v-radio-group>
-              </v-col>
-            </v-row> -->
             <v-row>
               <v-col class="gen-title">
                 トーナメント表生成タイプ
@@ -49,6 +34,9 @@
             <v-row>
               <v-col class="gen-title">
                 ポイント表示
+                <v-icon small>
+                  mdi-help-circle
+                </v-icon>
               </v-col>
               <v-col>
                 <v-switch
@@ -100,25 +88,25 @@
       <transition name="fade">
       <v-row v-show="particsDispFlg">
         <v-col align="center" class="grey lighten-5">
-            <v-card max-width="800">
+            <v-card>
               <v-card-title>
                 {{ `参加${rctType === 1 ? '者': 'チーム'}情報` }}
-              </v-card-title>
-              <v-card-text>
+                <v-spacer></v-spacer>
                 <v-text-field
                   v-model="search"
                   append-icon="mdi-magnify"
                   label="Search"
                   single-line
                   hide-details
-                  autocomplete="off"
-                />
+                ></v-text-field>
+              </v-card-title>
+              <v-card-text>
                 <v-data-table
                   :headers="headers"
                   :items="partics"
                   :search="search"
+                  :items-per-page="5"
                   item-key="id"
-                  height="200"
                   disable-sort
                   no-data-text="データがありません。"
                   no-results-text="該当するデータがありません。"

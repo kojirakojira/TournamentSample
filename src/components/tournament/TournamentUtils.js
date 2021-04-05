@@ -189,10 +189,8 @@ export default {
     },
     start (e) {
       this.startEvent = e
-      console.log('start')
     },
     end (e) {
-      console.log('end')
       if (!this.startEvent) {
         return
       }
@@ -220,7 +218,6 @@ export default {
       this.startEvent = null
     },
     move (e) {
-      console.log('move')
       this.moveEvent = e
     }
   }
